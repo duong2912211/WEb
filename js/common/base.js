@@ -61,7 +61,7 @@ class BaseJS {
                 var value = $(this).val();
              // Check với trường hợp input là radio , thì chỉ lấy value của input có attribute là checked
                 if ($(this).attr('type') == "radio") {
-                    if ($(this).attr('checked') == "checked") {
+                    if (this.checked) {
                         customer[propertyName] = value;
                     }
                 } else {
