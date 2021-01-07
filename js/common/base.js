@@ -1,12 +1,17 @@
 
 class BaseJS {
     constructor() {
+        this.host = "http://api.manhnv.net";
+        this.apiRouter = null;
         this.getDataUrl = null;
-        this.setDataUrl();
+        this.setApiRouter();
         this.loadData();
         this.initEvents();
     }
 
+    setApiRouter() {
+
+    }
     setDataUrl() {
 
     }
@@ -55,29 +60,28 @@ class BaseJS {
 
             //thu thập thông tin dữ liệu được nhập --> build thành object
             var inputs = $('input[fieldName],select[fieldName]');
-            var customer = {};
+            var entity = {};
             $.each(inputs, function (index, input) {
                 var propertyName = $(this).attr('fieldName');
                 var value = $(this).val();
              // Check với trường hợp input là radio , thì chỉ lấy value của input có attribute là checked
                 if ($(this).attr('type') == "radio") {
                     if (this.checked) {
-                        customer[propertyName] = value;
+                        entity[propertyName] = value;
                     }
                 } else {
-                    customer[propertyName] = value;
+                    entity[propertyName] = value;
                 }
             })
-            console.log(customer);
             
             //Gọi service tương ứng thực hiện lưu dữ liệu
             //+Sau khi lưu thành công đưa ra thông báo cho người dùng
             //+ẩn form chi tiết
             //+load lại dữ liệu
             $.ajax({
-                url: 'http://api.manhnv.net/api/customers',
+                url: me.host + me.apiRouter ,
                 method: 'POST',
-                data: JSON.stringify(customer),
+                data: JSON.stringify(entity),
                 contentType: 'application/json'
             }).done(function (res) {
                 debugger;
@@ -137,11 +141,12 @@ class BaseJS {
      * CreateBy:Duong (4/1/2021)
      * */
     loadData() {
+        var me = this;
         $('table tbody').empty();
         var columns = $('table thead th');
         var getDataUrl = this.getDataUrl;
         $.ajax({
-            url: getDataUrl,
+            url: me.host + me.apiRouter,
             method: "GET",
         }).done(function (res) {
             var data = res;
