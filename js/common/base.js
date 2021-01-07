@@ -59,11 +59,13 @@ class BaseJS {
             $.each(inputs, function (index, input) {
                 var propertyName = $(this).attr('fieldName');
                 var value = $(this).val();
-                customer[propertyName] = value;
-
              // Check với trường hợp input là radio , thì chỉ lấy value của input có attribute là checked
-                if ($(this).attr('type') == "radio" && $(this).attr('checked') == "checked") {
-                    customer[propertyName] = true;
+                if ($(this).attr('type') == "radio") {
+                    if ($(this).attr('checked') == "checked") {
+                        customer[propertyName] = value;
+                    }
+                } else {
+                    customer[propertyName] = value;
                 }
             })
             console.log(customer);
