@@ -20,6 +20,7 @@ class BaseJS {
         $('#btnAdd').click(function () {
             //Hiển thị thông tin chi tiết
             $('#dialog').css('display', 'block');
+
         })
         //Load lại dữ liệu khi nhấn button nạp
         $('#btnRefresh').click(function () {
@@ -59,22 +60,18 @@ class BaseJS {
                 var propertyName = $(this).attr('fieldName');
                 var value = $(this).val();
                 customer[propertyName] = value;
+
+             // Check với trường hợp input là radio , thì chỉ lấy value của input có attribute là checked
+                if ($(this).attr('type') == "radio" && $(this).attr('checked') == "checked") {
+                    customer[propertyName] = true;
+                }
             })
             console.log(customer);
-            return;
-            var customer = {
-                "CustomerCode": $('#txtCustomerCode').val(),
-                "FullName": $('#txtFullName').val(),
-                "MemberCardCode": $('#txtMemberCardCode').val(),
-                "CustomerGroupId": "00000000-0000-0000-0000-000000000000",
-                "DateOfBirth": $('#dtDateOfBirth').val(),
-                "Email": $('#txtEmail').val(),
-                "PhoneNumber": $('#txtPhoneNumber').val(),
-                "Address": $('#txtAddress').val()    
-            }
-            console.log(customer);
+            
             //Gọi service tương ứng thực hiện lưu dữ liệu
-
+            //+Sau khi lưu thành công đưa ra thông báo cho người dùng
+            //+ẩn form chi tiết
+            //+load lại dữ liệu
             $.ajax({
                 url: 'http://api.manhnv.net/api/customers',
                 method: 'POST',
@@ -82,16 +79,12 @@ class BaseJS {
                 contentType: 'application/json'
             }).done(function (res) {
                 debugger;
-                //alert('Thêm thành công!');
-               // me.loadData();
+                alert('Thêm thành công!');
+                me.loadData();
             }).fail(function (res) {
-                debugger;
+                console.log(res);
             }.bind(this))
-            //Sau khi lưu thành công đưa ra thông báo cho người dùng 
-
-            //ẩn form chi tiết 
-
-            //load lại dữ liệu
+            
 
         })
         //Hiển thị thông tin chi tiết khi ấn đúp chuột
