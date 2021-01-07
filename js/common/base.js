@@ -16,16 +16,39 @@ class BaseJS {
 
     }
     /**
-     * 
-     * 
+     * Hàm set sự kiện cho các nút 
+     * CreateBy: DUONG(5/1/2021)
      * */
     initEvents() {
         var me = this;
         //Sự kiện click khiaans thêm mới 
         $('#btnAdd').click(function () {
-            //Hiển thị thông tin chi tiết
-            $('#dialog').css('display', 'block');
-
+            try {
+                //Hiển thị thông tin chi tiết
+                $('#dialog').css('display', 'block');
+                //load dữ liệu cho các combobox:
+                var select = $('select#cbxCustomerGroup');
+                select.empty();
+                // lấy dữ liệu nhóm khách hàng
+                $('.loading').show();
+                $.ajax({
+                    url: me.host + "/api/customergroups",
+                    method: "GET"
+                }).done(function (res) {
+                    if (res) {
+                        console.log(res);
+                        $.each(res, function (index, obj) {
+                            var option = $(`<option value="${obj.CustomerGroupId}">${obj.CustomerGroupName}</option>`);
+                            select.append(option);
+                        })
+                    }
+                    $('.loading').hide();
+                }).fail(function (res) {
+                    $('.loading').hide();
+                })
+            } catch (e) {
+                console.log(e);
+            }
         })
         //Load lại dữ liệu khi nhấn button nạp
         $('#btnRefresh').click(function () {
@@ -49,7 +72,7 @@ class BaseJS {
             //validate dữ liệu
             var inputValidate = $('input[required], input [type="email"]');
             $.each(inputValidate, function (index, input) {
-                $(input).trigger('blur');      
+                $(input).trigger('blur');
             })
             var inputNotValids = $('input[validate="false"]');
             if (inputNotValids && inputNotValids.length > 0) {
@@ -64,7 +87,7 @@ class BaseJS {
             $.each(inputs, function (index, input) {
                 var propertyName = $(this).attr('fieldName');
                 var value = $(this).val();
-             // Check với trường hợp input là radio , thì chỉ lấy value của input có attribute là checked
+                // Check với trường hợp input là radio , thì chỉ lấy value của input có attribute là checked
                 if ($(this).attr('type') == "radio") {
                     if (this.checked) {
                         entity[propertyName] = value;
@@ -73,13 +96,13 @@ class BaseJS {
                     entity[propertyName] = value;
                 }
             })
-            
+
             //Gọi service tương ứng thực hiện lưu dữ liệu
             //+Sau khi lưu thành công đưa ra thông báo cho người dùng
             //+ẩn form chi tiết
             //+load lại dữ liệu
             $.ajax({
-                url: me.host + me.apiRouter ,
+                url: me.host + me.apiRouter,
                 method: 'POST',
                 data: JSON.stringify(entity),
                 contentType: 'application/json'
@@ -90,7 +113,7 @@ class BaseJS {
             }).fail(function (res) {
                 console.log(res);
             }.bind(this))
-            
+
 
         })
         //Hiển thị thông tin chi tiết khi ấn đúp chuột
@@ -124,13 +147,13 @@ class BaseJS {
             var value = $(this).val();
             var testEmail = /^[A-Z0-9._%+-]+@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
             if (!testEmail.test(value)) {
-                 // Do whatever if it fails.
+                // Do whatever if it fails.
                 $(this).addClass('border-red');
                 $(this).attr('title', 'Email không đúng định dạng');
                 $(this).attr("validate", false);
             }
             else {
-                 // Do whatever if it passes.
+                // Do whatever if it passes.
                 $(this).removeClass('border-red');
                 $(this).attr("validate", true);
             }
@@ -145,15 +168,16 @@ class BaseJS {
         $('table tbody').empty();
         var columns = $('table thead th');
         var getDataUrl = this.getDataUrl;
+        $('.loading').show();
         $.ajax({
             url: me.host + me.apiRouter,
             method: "GET",
         }).done(function (res) {
             var data = res;
             $.each(data, function (index, obj) {
-                var tr =$( `<tr></tr> `);
-                    //Lấy thông tin dữ liệu sẽ map tương ứng 
-                $.each(columns, function (index, th) {  
+                var tr = $(`<tr></tr> `);
+                //Lấy thông tin dữ liệu sẽ map tương ứng 
+                $.each(columns, function (index, th) {
                     var td = $(`<td><div><span></span></div></td>`);
                     var fieldName = $(th).attr('fieldName');
                     var value = obj[fieldName];
@@ -174,6 +198,7 @@ class BaseJS {
                     $(tr).append(td);
                 })
                 $('table tbody ').append(tr);
+                $('.loading').hide();
             })
         }).fail(function (res) {
 
@@ -181,4 +206,4 @@ class BaseJS {
         })
     }
 }
-//Lay du lieu ve 
+//Lay du lieu ve
