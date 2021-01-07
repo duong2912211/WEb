@@ -1,0 +1,17 @@
+﻿.text-align-right{
+    text-align:right;
+}
+
+.text-align-center {
+    text-align: center;
+}
+.m-row{
+    margin-top:16px;
+}
+.m-label{
+    margin-bottom:4px;
+}
+
+input.border-red{
+    border: 1px solid #ff0000;
+}
